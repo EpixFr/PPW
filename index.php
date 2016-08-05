@@ -3,6 +3,13 @@
 	$timestamp_debut = microtime(true);
     //inclusion du fichier de config
 	require_once 'config.inc.php';
+
+	//Fonction affichage taille fichier
+	function affichage_taille_fichier($bytes, $decimals = 2) {
+  		$sz = 'BKMG';
+  		$factor = floor((strlen($bytes) - 1) / 3);
+  		return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) .' '. @$sz[$factor].'o';
+	}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -69,7 +76,7 @@
 				$racine = getcwd();
 				//Ajoute de l'emplacement des projets
 				$dossier_projets = DOSSIER_PROJETS;
-				$repertoire = $racine.$dossier_projets;
+				$repertoire = $racine.'/'.$dossier_projets;
 
 				//Scanne les projets 
 				$liste_projet = scandir($repertoire);
@@ -88,13 +95,21 @@
 						//Init des variables
 						$arbo_projet = $repertoire.'/'.$projet;
 						$nb_fichier = 0;
+						$nb_dossier = 0;
+						$taille_projet = 0;
 						$nb_fichier_code = 0;
+						$nb_image = 0;
+						//type langages
 						$type_php = 0;
 						$type_css = 0;
 						$type_js = 0;
-						$type_image = 0;
-						$type_autre = 0;
-						$nb_dossier = 0;
+						$type_html = 0;
+						//type images
+						$type_jpg = 0;
+						$type_gif = 0;
+						$type_png = 0;
+						
+						$type_autre = 0;						
 						//Création des objets datetime
 						$date_creation = new DateTime();
 						$date_compare = new DateTime();
@@ -109,6 +124,10 @@
 
 						//Parcours de la liste des fichiers/dossiers d'un projet
 						foreach ($liste_recursive as $fichier) {
+							
+							//Calcul taille du projet sur le disque
+							$taille_projet = $taille_projet + filesize($fichier);
+
 							//On ne prend pas les fichiers contenu dans l'arborescence lié à Git
 							//On recherche dans le path si on trouve l'occurence .git
 							if (strpos($fichier->getPathname(),'.git') === false) {
@@ -129,7 +148,7 @@
 											//  Traitement des extensions
 											//-----------------------------------
 											// Comptage des fichiers de code en fonction de l'extension du fichier
-											switch ($fichier->getExtension()) {
+											switch (strtolower($fichier->getExtension())) {
 												case 'php': 
 														$type_php++;
 														$nb_fichier_code++;
@@ -144,10 +163,18 @@
 														$type_js++;
 														$nb_fichier_code++;
 														break;
+												case 'html':
+												case 'phtml':
+														$type_html++;
+														$nb_fichier_code++;		
 												case 'jpg' : 
+														$type_jpg++; 
+														break;
 												case 'png' : 
+														$type_png++; 
+														break;
 												case 'gif' : 
-														$type_image++; 
+														$type_gif++; 
 														break; 
 												default: $type_autre++; break;
 											}
@@ -174,12 +201,14 @@
 								$projet_git = true;							
 							}
 					}
+				//Calcul nb_images
+				$nb_image = $type_gif + $type_jpg + $type_png;
 				?>
 				<li class="col-md-3 col-sm-6 col-xs-12 ">
 					<div class="thumbnail" style="padding: 0">
 						<div class="caption">
 							<h2>
-									<a href="<?php echo('http://'.$_SERVER['HTTP_HOST'].'/'.$dossier_projets.'/'.$projet); ?>" target="_blank"><?php echo(ucfirst($projet))?></a>
+									<a href="<?php echo($dossier_projets.'/'.$projet); ?>" target="_blank"><?php echo(ucfirst($projet))?></a>
 									<?php if($projet_git == true) { ?>
 									<small><span class="icon icon-git orange"></span></small>
 									<?php } ?>
@@ -188,49 +217,64 @@
 								<b><?php echo(date_format($date_modification, "d.m.Y H:i:s")); ?></b><br/><small>Dernière modification</small>
 							</p>
 							<p>
-								<b><?php echo(date_format($date_creation, "d.m.Y")); ?></b><br/><small>Date de création</small>
+								
+								<div class="row">
+									<div class="col-md-6 col-sm-6 col-xs-12">
+										<b><?php echo(date_format($date_creation, "d.m.Y")); ?></b><br/><small>Date de création</small>
+									</div>
+									<div class="col-md-6 col-sm-6 col-xs-12">
+										<b><?php echo(affichage_taille_fichier($taille_projet)); ?></b><br/><small>Taille sur le disque</small>
+									</div>
+								</div>
 							</p>							
 						</div>
 						<div class="modal-footer" style="text-align: left">
 							<div class="progress">
 								<div 
-									class="progress-bar progress-bar-striped" 
+									class="progress-bar progress-bar-striped progress-bar-success" 
 									style="width: <?php if($nb_fichier_code > 0){echo(round(($type_php*100/$nb_fichier_code)));} ?>%;"  
 									data-toggle="tooltip" 
 									data-placement="bottom" 
-									title="PHP <?php echo(round(($type_php*100/$nb_fichier_code))); ?>%">
+									title="<?php echo($type_php); ?>">
 								</div>
 								<div 
-									class="progress-bar progress-bar-warning progress-bar-striped" 
-									style="width:  <?php  if($nb_fichier_code > 0){echo(round(($type_css*100/$nb_fichier_code)));} ?>%" 
-									data-toggle="tooltip" 
-									data-placement="bottom" 
-									title="CSS <?php echo(round(($type_css*100/$nb_fichier_code))); ?>%">
-								</div>
-								<div 
-									class="progress-bar progress-bar-striped progress-bar-success" 
+									class="progress-bar progress-bar-striped progress-bar-warning" 
 									style="width:  <?php  if($nb_fichier_code > 0){echo(round(($type_js*100/$nb_fichier_code)));} ?>%" 
 									data-toggle="tooltip" 
 									data-placement="bottom" 
-									title="JS <?php echo(round(($type_js*100/$nb_fichier_code))); ?>%">
+									title="<?php echo($type_js); ?>">
+								</div>
+								<div 
+									class="progress-bar progress-bar-striped" 
+									style="width:  <?php  if($nb_fichier_code > 0){echo(round(($type_css*100/$nb_fichier_code)));} ?>%" 
+									data-toggle="tooltip" 
+									data-placement="bottom" 
+									title="<?php echo($type_css); ?>">
+								</div>								
+								<div 
+									class="progress-bar progress-bar-striped progress-bar-info" 
+									style="width:  <?php  if($nb_fichier_code > 0){echo(round(($type_html*100/$nb_fichier_code)));} ?>%" 
+									data-toggle="tooltip" 
+									data-placement="bottom" 
+									title="<?php echo($type_html); ?>">
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-sm-4 col-xs-4">
-									<span class="badge bgplus" data-toggle="tooltip" data-placement="bottom" title="<?php echo($nb_dossier.' dossier');if($nb_dossier>1){echo('s');} ?>">
+									<span class="badge bgplus" data-toggle="tooltip" data-placement="bottom"  data-html="true" title="<?php echo($nb_dossier.' dossier');if($nb_dossier>1){echo('s');} ?>">
 										<?php echo($nb_dossier.' '); ?>
 										<span class="icon icon-folder-open"></span>
 									</span>
 								</div>
 								<div class="col-sm-4 col-xs-4">
-									<span class="badge" data-toggle="tooltip" data-placement="bottom" title="<?php echo($nb_fichier.' fichier');if($nb_fichier>1){echo('s');} ?>">
+									<span class="badge" data-toggle="tooltip" data-placement="bottom"  data-html="true" title="<?php echo($nb_fichier.' fichier');if($nb_fichier>1){echo('s');} ?>">
 										<?php echo($nb_fichier.' '); ?>
 										<span class="icon icon-file-text2"></span>
 									</span>
 								</div>
 								<div class="col-sm-4 col-xs-4">
-									<span class="badge" data-toggle="tooltip" data-placement="bottom" title="<?php echo($type_image.' image');if($type_image>1){echo('s');} ?>">
-										<?php echo($type_image.' '); ?>
+									<span class="badge" data-toggle="tooltip" data-placement="bottom" data-html="true" title="<?php echo($type_jpg.' JPG <br> '.$type_png.' PNG <br>'.$type_gif.' GIF');?>">
+										<?php echo($nb_image.' '); ?>
 										<span class="icon icon-image"></span>
 									</span>
 								</div>								
@@ -250,16 +294,22 @@
 				//Calcul et affichage de temps de génération de la page côté serveur
 				$timestamp_fin = microtime(true);
 				$temps_page = $timestamp_fin - $timestamp_debut;
-				if ($temps_page<1) { $temps_page = round($temps_page,3); } else { $temps_page = round($temps_page,2); }
-				echo ('Page générée en ' . $temps_page . ' seconde');
-				if($temps_page>=2) { echo('s');}
+				if ($temps_page<1) { 
+					$temps_page = round($temps_page,3)*1000; 
+					echo ('Page générée en ' . $temps_page . ' ms');
+				} else { 
+					$temps_page = round($temps_page,2);
+					echo ('Page générée en ' . $temps_page . ' seconde');
+					if($temps_page>=2) { echo('s');} 
+				}				
 				?>	
 			</div>
 			<div class="col-xs-4 col-md-2 text-center">	
 				<div class="progress">
-					<div class="progress-bar progress-bar" style="width:33%;">PHP</div>
-					<div class="progress-bar progress-bar progress-bar-warning" style="width:34%">CSS</div>
-					<div class="progress-bar progress-bar progress-bar-success" style="width:33%">JS</div>
+					<div class="progress-bar progress-bar progress-bar-success" style="width:25%;">PHP</div>
+					<div class="progress-bar progress-bar progress-bar-warning" style="width:25%">JS</div>
+					<div class="progress-bar progress-bar " style="width:25%">CSS</div>
+					<div class="progress-bar progress-bar progress-bar-info" style="width:25%">HTML</div>
 				</div>			 	
 			</div>
 			<div class="col-xs-4 col-md-5 text-right">

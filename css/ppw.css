@@ -75,3 +75,7 @@ a:hover {
 .modal-footer {
   background-color: #f1f1f1;
 }
+
+.tooltip-inner {
+    white-space:pre-wrap;
+}
