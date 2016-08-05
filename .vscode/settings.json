@@ -1,0 +1,13 @@
+// Placez vos paramètres dans ce fichier pour remplacer les paramètres par défaut
+{
+     //-------- Options de configuration PHP --------
+    "php.validate.enable": true,
+    "php.validate.executablePath": "Z:/EasyPHP/eds-binaries/php/php5619vc11x86x160427162903/php.exe",
+    "php.validate.run": "onType",
+
+        //---------- Intégration GitPortable -----------
+    "git.enabled": true,
+    "git.autofetch": true,
+    "git.path": "Z:/PortableGit-2.8.1-64Bits/bin/git.exe"
+}
+
