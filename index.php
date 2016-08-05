@@ -19,6 +19,7 @@
 
 	<!-- Custom styles for this template -->
 	<link href="css/starter-template.css" rel="stylesheet">
+	<link href="css/icoMoon.css" rel="stylesheet">
 
 	<!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
 	<!--[if lt IE 9]><script src="js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -40,12 +41,12 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-				<a class="navbar-brand" href="#">Portail Projets Web</a>
+				<a class="navbar-brand" href="#"><span class="icon icon-home"></span> Portail Projets Web</a>
 			</div>
 			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">				
-					<li><a href="php/infophp.php" target="_blank">Phpinfo</a></li>
-					<li><a href="IcoMoonRef/Reference.html" target="'_blank">IcoMoon</a></li>
+					<li><a href="php/infophp.php" target="_blank"><span class="icon icon-cog"></span> Phpinfo</a></li>
+					<li><a href="IcoMoonRef/Reference.html" target="'_blank"><span class="icon icon-IcoMoon"></span> IcoMoon</a></li>
 				</ul>
 			</div>
 			<!--/.nav-collapse -->
@@ -156,20 +157,56 @@
 					<div class="thumbnail" style="padding: 0">
 						<div class="caption">
 							<h2><small><a href="<?php echo('http://'.$_SERVER['HTTP_HOST'].'/'.$dossier_projets.'/'.$projet); ?>" target="_blank"><?php echo(ucfirst($projet))?></a></small></h2>
-							<!-- <p><a href="<?php echo('http://'.$_SERVER['HTTP_HOST'].'/'.$dossier_projets.'/'.$projet); ?>" target="_blank"><i><?php echo('http://'.$_SERVER['HTTP_HOST'].'/'.$dossier_projets.'/'.$projet); ?></i></a></p> -->
-							<p><span class="badge" data-toggle="tooltip" data-placement="left" title="Date du dernier fichier modifié">M</span> <?php echo(date_format($date_modification, "d.m.Y H:i:s")); ?></p>
-							<p><span class="badge" data-toggle="tooltip" data-placement="bottom" title="<?php echo($type_image); ?> images"><span class="glyphicon glyphicon-picture"></span></span></p>
+							<p>
+								<b><?php echo(date_format($date_modification, "d.m.Y H:i:s")); ?></b><br/><small>Dernière modification</small>
+							</p>
+							<p>
+								<b><?php echo(date_format($date_creation, "d.m.Y")); ?></b><br/><small>Date de création</small>
+							</p>							
 						</div>
 						<div class="modal-footer" style="text-align: left">
 							<div class="progress">
-								<div class="progress-bar progress-bar-striped" style="width: <?php echo(round(($type_php*100/$nb_fichier_code))); ?>%;"  data-toggle="tooltip" data-placement="bottom" title="PHP <?php echo(round(($type_php*100/$nb_fichier_code))); ?>%"></div>
-								<div class="progress-bar progress-bar-warning progress-bar-striped" style="width:  <?php echo(round(($type_css*100/$nb_fichier_code))); ?>%" data-toggle="tooltip" data-placement="bottom" title="CSS <?php echo(round(($type_css*100/$nb_fichier_code))); ?>%"></div>
-								<div class="progress-bar progress-bar-striped progress-bar-success" style="width:  <?php echo(round(($type_js*100/$nb_fichier_code))); ?>%" data-toggle="tooltip" data-placement="bottom" title="JS <?php echo(round(($type_js*100/$nb_fichier_code))); ?>%"></div>
+								<div 
+									class="progress-bar progress-bar-striped" 
+									style="width: <?php if($nb_fichier_code > 0){echo(round(($type_php*100/$nb_fichier_code)));} ?>%;"  
+									data-toggle="tooltip" 
+									data-placement="bottom" 
+									title="PHP <?php echo(round(($type_php*100/$nb_fichier_code))); ?>%">
+								</div>
+								<div 
+									class="progress-bar progress-bar-warning progress-bar-striped" 
+									style="width:  <?php  if($nb_fichier_code > 0){echo(round(($type_css*100/$nb_fichier_code)));} ?>%" 
+									data-toggle="tooltip" 
+									data-placement="bottom" 
+									title="CSS <?php echo(round(($type_css*100/$nb_fichier_code))); ?>%">
+								</div>
+								<div 
+									class="progress-bar progress-bar-striped progress-bar-success" 
+									style="width:  <?php  if($nb_fichier_code > 0){echo(round(($type_js*100/$nb_fichier_code)));} ?>%" 
+									data-toggle="tooltip" 
+									data-placement="bottom" 
+									title="JS <?php echo(round(($type_js*100/$nb_fichier_code))); ?>%">
+								</div>
 							</div>
 							<div class="row">
-								<div class="col-sm-3 col-xs-6"><b><?php echo($nb_dossier); ?></b><br/><small>Dossier<?php if($nb_dossier>1){echo('s');} ?></small></div>
-								<div class="col-sm-3 col-xs-6"><b><?php echo($nb_fichier); ?></b><br/><small>Fichier<?php if($nb_fichier>1){echo('s');} ?></small></div>
-								<div class="col-sm-6 col-xs-12"><b><?php echo(date_format($date_creation, "d.m.Y")); ?></b><br/><small>Création</small></div>
+								<div class="col-sm-4 col-xs-4">
+									<span class="badge" data-toggle="tooltip" data-placement="bottom" title="<?php echo($nb_dossier.' dossier');if($nb_dossier>1){echo('s');} ?>">
+										<?php echo($nb_dossier.' '); ?>
+										<span class="icon icon-folder-open"></span>
+									</span>
+								</div>
+								<div class="col-sm-4 col-xs-4">
+									<span class="badge" data-toggle="tooltip" data-placement="bottom" title="<?php echo($nb_fichier.' fichier');if($nb_fichier>1){echo('s');} ?>">
+										<?php echo($nb_fichier.' '); ?>
+										<span class="icon icon-file-text2"></span>
+									</span>
+								</div>
+								<div class="col-sm-4 col-xs-4">
+									<span class="badge" data-toggle="tooltip" data-placement="bottom" title="<?php echo($type_image.' image');if($type_image>1){echo('s');} ?>">
+										<?php echo($type_image.' '); ?>
+										<span class="icon icon-image"></span>
+									</span>
+								</div>								
 							</div>
 						</div>
 					</div>
