@@ -45,7 +45,7 @@
 			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">				
 					<li><a href="php/infophp.php" target="_blank">Phpinfo</a></li>
-					<!--<li><a href="#contact">PhpMyAdmin</a></li>-->
+					<li><a href="IcoMoonRef/Reference.html" target="'_blank">IcoMoon</a></li>
 				</ul>
 			</div>
 			<!--/.nav-collapse -->
