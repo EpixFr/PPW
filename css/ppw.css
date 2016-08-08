@@ -1,0 +1,77 @@
+body {
+  padding-top: 70px;
+  background-color: #ededed;
+}
+
+.navbar-brand {
+  font-size: 2em;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.navbar-nav {
+   padding-top: 8px;
+}
+
+.navbar-inverse .navbar-nav>li>a:hover {
+   color: #55B7FF;   
+}
+
+.bleu {
+  color: #4EB2D0;
+}
+
+.orange {
+  color : #ECA477;
+}
+h2 {
+  font-size: 1.8em;
+}
+
+.caption {
+  padding-top : 0px !important;  
+}
+
+a:hover {
+  text-decoration: none;
+  color : #ECA477;
+}
+
+.bar_temps {
+  border-top: 1px dotted #ccc; 
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.8em;
+  color: #666;
+  padding: 4px 0px;
+}
+
+.panel-body {
+  padding-bottom: 0px !important;
+}
+
+.panel-heading {
+  background-color: #666 !important;
+  color: #efefef;
+  padding: 2px 4px 2px 4px;
+  font-size: 0.8em;
+}
+
+.panel-primary {
+  border: 1px solid #666;
+  background-color: #fff;
+}
+
+.thumbnail {
+  -moz-box-shadow: 0px 0px 10px 0px #9b9b9b;
+  -webkit-box-shadow: 0px 0px 10px 0px #9b9b9b;
+  -o-box-shadow: 0px 0px 10px 0px #9b9b9b;
+  box-shadow: 0px 0px 10px 0px #9b9b9b;
+  filter:progid:DXImageTransform.Microsoft.Shadow(color=#9b9b9b, Direction=NaN, Strength=10);
+}
+
+.badge {
+  padding: 5px 8px;
+}
+
+.modal-footer {
+  background-color: #f1f1f1;
+}

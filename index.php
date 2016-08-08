@@ -1,3 +1,7 @@
+<?php 
+	// Capture du temp en début de page 
+	$timestamp_debut = microtime(true);
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -17,8 +21,8 @@
 	<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 	<link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet">
 
-	<!-- Custom styles for this template -->
-	<link href="css/starter-template.css" rel="stylesheet">
+    <!-- Feuilles de style -->
+	<link href="css/ppw.css" rel="stylesheet">
 	<link href="css/icoMoon.css" rel="stylesheet">
 
 	<!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
@@ -41,7 +45,7 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-				<a class="navbar-brand" href="#"><span class="icon icon-home"></span> Portail Projets Web</a>
+				<a class="navbar-brand" href="#"><span class="icon icon-sphere bleu"></span> <span class="bleu">P</span>ortail <span class="bleu">P</span>rojets <span class="bleu">W</span>eb</a>
 			</div>
 			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">				
@@ -94,20 +98,23 @@
 						//Init date modif pour comparaison
 						$date_modification->setDate(1970,01,01);
 
+						$projet_git = false;
+			
 						//Création de l'arborescence des fichiers à parcourir
 						$liste_recursive = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($arbo_projet));
 
 						//Parcours de la liste des fichiers/dossiers d'un projet
 						foreach ($liste_recursive as $fichier) {
+							//On ne prend pas les fichiers contenu dans l'arborescence lié à Git
+							//On recherche dans le path si on trouve l'occurence .git
+							if (strpos($fichier->getPathname(),'.git') === false) {
 								//Traitement si le fichier est un dossier
 								if ($fichier->isDir() and $fichier->getFilename() <> '..') {
 										$nb_dossier++;     
 								} else {
 								//Traitement si le fichier n'est pas un dossier
-										//On ne prend pas les fichiers contenu dans l'arborescence lié à Git
-										//On recherche dans le path si on trouve l'occurence .git
-										if (strpos($fichier->getPathname(),'.git') === false) {
-											$nb_fichier++;
+									       if ($fichier->getFilename() <> '..') { $nb_fichier++;}
+											
 											//-----------------------------------
 											//  Traitement des extensions
 											//-----------------------------------
@@ -145,18 +152,28 @@
 												//On clone l'objet pour pouvoir le copier
 												$date_creation = clone $date_compare;                
 											}
-											//Recherche date de dernière modification
-											if ($date_compare > $date_modification) {
-												$date_modification = clone $date_compare;                
-											}               
+											 if ($fichier->getFilename() <> '..') {
+												$date_compare->setTimestamp(filemtime($fichier));											
+												//Recherche date de dernière modification
+												if ($date_compare > $date_modification) {
+													$date_modification = clone $date_compare; 
+												}               
+											 } 
 										}
+							} else {								
+								$projet_git = true;							
 							}
 					}
 				?>
 				<li class="col-md-3 col-sm-6 col-xs-12 ">
 					<div class="thumbnail" style="padding: 0">
 						<div class="caption">
-							<h2><small><a href="<?php echo('http://'.$_SERVER['HTTP_HOST'].'/'.$dossier_projets.'/'.$projet); ?>" target="_blank"><?php echo(ucfirst($projet))?></a></small></h2>
+							<h2>
+									<a href="<?php echo('http://'.$_SERVER['HTTP_HOST'].'/'.$dossier_projets.'/'.$projet); ?>" target="_blank"><?php echo(ucfirst($projet))?></a>
+									<?php if($projet_git == true) { ?>
+									<small><span class="icon icon-git orange"></span></small>
+									<?php } ?>
+							</h2>
 							<p>
 								<b><?php echo(date_format($date_modification, "d.m.Y H:i:s")); ?></b><br/><small>Dernière modification</small>
 							</p>
@@ -190,7 +207,7 @@
 							</div>
 							<div class="row">
 								<div class="col-sm-4 col-xs-4">
-									<span class="badge" data-toggle="tooltip" data-placement="bottom" title="<?php echo($nb_dossier.' dossier');if($nb_dossier>1){echo('s');} ?>">
+									<span class="badge bgplus" data-toggle="tooltip" data-placement="bottom" title="<?php echo($nb_dossier.' dossier');if($nb_dossier>1){echo('s');} ?>">
 										<?php echo($nb_dossier.' '); ?>
 										<span class="icon icon-folder-open"></span>
 									</span>
@@ -211,27 +228,34 @@
 						</div>
 					</div>
 				</li>
-				<?php 
+			<?php 
 			} 
-	}
-?>
+		}
+	?>
 			</ul>
-		</div>
-		<div class="row">
-	  	<div class="col-md-offset-4 col-md-3">
-				<div class="panel panel-info">
-					<div class="panel-heading">Légende des langages</div>
-					<div class="panel-body">
-			 			<div class="progress">
-							<div class="progress-bar progress-bar-striped" style="width:33%;">PHP</div>
-							<div class="progress-bar progress-bar-warning progress-bar-striped" style="width:34%">CSS</div>
-							<div class="progress-bar progress-bar-striped progress-bar-success" style="width:33%">JS</div>
-						</div>
-					</div>
-				</div>					 
- 			</div>  
- 		</div> 
-	</div>						
+		</div>	
+		<div class="row bar_temps">
+			<div class="col-xs-4 col-md-5 text-left">
+				<?php
+				//Calcul et affichage de temps de génération de la page côté serveur
+				$timestamp_fin = microtime(true);
+				$temps_page = round($timestamp_fin - $timestamp_debut,2);
+				echo ('Page générée en ' . $temps_page . ' seconde');
+				if($temps_page>=2) { echo('s');}
+				?>	
+			</div>
+			<div class="col-xs-4 col-md-2 text-center">	
+				<div class="progress">
+					<div class="progress-bar progress-bar" style="width:33%;">PHP</div>
+					<div class="progress-bar progress-bar progress-bar-warning" style="width:34%">CSS</div>
+					<div class="progress-bar progress-bar progress-bar-success" style="width:33%">JS</div>
+				</div>			 	
+			</div>
+			<div class="col-xs-4 col-md-5 text-right">
+			By Epix &copy; 2016
+			</div>	
+		</div>		 
+	</div>							
 	<!-- /.container -->
 
 	<!-- Bootstrap core JavaScript
