@@ -1,6 +1,8 @@
 <?php 
 	// Capture du temp en début de page 
 	$timestamp_debut = microtime(true);
+    //inclusion du fichier de config
+	require_once 'config.inc.php';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -52,6 +54,7 @@
 				<ul class="nav navbar-nav">				
 					<li><a href="php/infophp.php" target="_blank"><span class="icon icon-cog"></span> Phpinfo</a></li>
 					<li><a href="IcoMoonRef/Reference.html" target="'_blank"><span class="icon icon-IcoMoon"></span> IcoMoon</a></li>
+					<li><a href="<?php echo(URL_ADMIN_BDD);?>" target="'_blank"><span class="icon icon-database"></span> PhpMyAdmin</a></li>
 				</ul>
 			</div>
 			<!--/.nav-collapse -->
@@ -65,7 +68,7 @@
 				//Trouve le dossier courant
 				$racine = getcwd();
 				//Ajoute de l'emplacement des projets
-				$dossier_projets = "/projets";
+				$dossier_projets = DOSSIER_PROJETS;
 				$repertoire = $racine.$dossier_projets;
 
 				//Scanne les projets 
@@ -111,6 +114,12 @@
 							if (strpos($fichier->getPathname(),'.git') === false) {
 								//Traitement si le fichier est un dossier
 								if ($fichier->isDir() and $fichier->getFilename() <> '..') {
+										$date_compare->setTimestamp(filectime($fichier));                  
+										//Recherche date de création
+										if ($date_compare < $date_creation) {
+											//On clone l'objet pour pouvoir le copier
+											$date_creation = clone $date_compare;                
+										}
 										$nb_dossier++;     
 								} else {
 								//Traitement si le fichier n'est pas un dossier
@@ -240,7 +249,8 @@
 				<?php
 				//Calcul et affichage de temps de génération de la page côté serveur
 				$timestamp_fin = microtime(true);
-				$temps_page = round($timestamp_fin - $timestamp_debut,2);
+				$temps_page = $timestamp_fin - $timestamp_debut;
+				if ($temps_page<1) { $temps_page = round($temps_page,3); } else { $temps_page = round($temps_page,2); }
 				echo ('Page générée en ' . $temps_page . ' seconde');
 				if($temps_page>=2) { echo('s');}
 				?>	
