@@ -116,9 +116,11 @@
 						$date_modification = new DateTime();
 						//Init date modif pour comparaison
 						$date_modification->setDate(1970,01,01);
-
+						//Projet suivi par Git
 						$projet_git = false;
-			
+						$version_projet = '';
+						$version_git_compare = '';
+							
 						//Création de l'arborescence des fichiers à parcourir
 						$liste_recursive = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($arbo_projet));
 
@@ -198,8 +200,18 @@
 											 } 
 										}
 							} else {								
-								$projet_git = true;							
-							}
+								$projet_git = true;	
+
+								 if (strpos($fichier->getPathname(),'tags') == true) {
+								 	//Traitement si le fichier est dans le dossier tags
+								 	$version_git_compare= $fichier->getFilename();;									           
+								 	//Recherche fichier le plus récent de la liste
+								 	if ($version_git_compare > $version_projet) {
+								 			//On clone l'objet pour pouvoir le copier
+											$version_projet = $fichier->getFilename();								 			         
+								 	}
+								 }
+							}	
 					}
 				//Calcul nb_images
 				$nb_image = $type_gif + $type_jpg + $type_png;
@@ -210,7 +222,7 @@
 							<h2>
 									<a href="<?php echo($dossier_projets.'/'.$projet); ?>" target="_blank"><?php echo(ucfirst($projet))?></a>
 									<?php if($projet_git == true) { ?>
-									<small><span class="icon icon-git orange"></span></small>
+									<small><span class="icon icon-git orange"></span> <small><?php echo($version_projet); ?></small></small>
 									<?php } ?>
 							</h2>
 							<p>

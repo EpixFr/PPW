@@ -2,7 +2,8 @@
 {
      //-------- Options de configuration PHP --------
     "php.validate.enable": true,
-    "php.validate.executablePath": "Z:/EasyPHP/eds-binaries/php/php5619vc11x86x160427162903/php.exe",
+    //"php.validate.executablePath": "Z:/EasyPHP/eds-binaries/php/php5619vc11x86x160427162903/php.exe",
+    "php.validate.executablePath": "C:/Program Files (x86)/Microsoft VS Code/php5/php.exe",    
     "php.validate.run": "onType",
 
         //---------- Intégration GitPortable -----------

@@ -6,6 +6,7 @@ body {
 .navbar-brand {
   font-size: 2em;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  color: #fff !important;
 }
 
 .navbar-nav {
