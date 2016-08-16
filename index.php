@@ -222,7 +222,7 @@
 							<h2>
 									<a href="<?php echo($dossier_projets.'/'.$projet); ?>" target="_blank"><?php echo(ucfirst($projet))?></a>
 									<?php if($projet_git == true) { ?>
-									<small><span class="icon icon-git orange"></span> <small><?php echo($version_projet); ?></small></small>
+									<small><span class="icon icon-git orange"></span> <small><?php if($version_projet<>'..'){echo($version_projet);} ?></small></small>
 									<?php } ?>
 							</h2>
 							<p>
