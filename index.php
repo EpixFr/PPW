@@ -2,14 +2,8 @@
 	// Capture du temp en début de page 
 	$timestamp_debut = microtime(true);
     //inclusion du fichier de config
-	require_once 'config.inc.php';
-
-	//Fonction affichage taille fichier
-	function affichage_taille_fichier($bytes, $decimals = 2) {
-  		$sz = 'BKMG';
-  		$factor = floor((strlen($bytes) - 1) / 3);
-  		return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) .' '. @$sz[$factor].'o';
-	}
+	require_once 'include/config.inc.php';
+	require_once 'include/fct_fichier.inc.php';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -111,9 +105,14 @@
 						
 						$type_autre = 0;						
 						//Création des objets datetime
+						$tz = new DateTimeZone(TIME_ZONE_SERVER);
 						$date_creation = new DateTime();
 						$date_compare = new DateTime();
 						$date_modification = new DateTime();
+						//Affectation du time zone
+						$date_creation->setTimezone($tz);
+						$date_compare->setTimezone($tz);
+						$date_modification->setTimezone($tz);
 						//Init date modif pour comparaison
 						$date_modification->setDate(1970,01,01);
 						//Projet suivi par Git
@@ -135,12 +134,12 @@
 							if (strpos($fichier->getPathname(),'.git') === false) {
 								//Traitement si le fichier est un dossier
 								if ($fichier->isDir() and $fichier->getFilename() <> '..') {
-										$date_compare->setTimestamp(filectime($fichier));                  
+										$date_compare->setTimestamp(filemtime($fichier));  										               
 										//Recherche date de création
-										if ($date_compare < $date_creation) {
-											//On clone l'objet pour pouvoir le copier
-											$date_creation = clone $date_compare;                
-										}
+										 if ($date_compare < $date_creation) {
+										 	//On clone l'objet pour pouvoir le copier
+										 	$date_creation = clone $date_compare;                
+										 }
 										$nb_dossier++;     
 								} else {
 								//Traitement si le fichier n'est pas un dossier
@@ -185,19 +184,13 @@
 											//-----------------------------------
 											// Recherche des dates de création et dernière modification du projet
 											// en comparant les dates des fichiers trouvés dans le projet
-											$date_compare->setTimestamp(filectime($fichier));                  
-											//Recherche date de création
-											if ($date_compare < $date_creation) {
-												//On clone l'objet pour pouvoir le copier
-												$date_creation = clone $date_compare;                
-											}
-											 if ($fichier->getFilename() <> '..') {
+											if ($fichier->getFilename() <> '..') {
 												$date_compare->setTimestamp(filemtime($fichier));											
 												//Recherche date de dernière modification
 												if ($date_compare > $date_modification) {
 													$date_modification = clone $date_compare; 
 												}               
-											 } 
+											} 
 										}
 							} else {								
 								$projet_git = true;	
@@ -207,8 +200,8 @@
 								 	$version_git_compare= $fichier->getFilename();;									           
 								 	//Recherche fichier le plus récent de la liste
 								 	if ($version_git_compare > $version_projet) {
-								 			//On clone l'objet pour pouvoir le copier
-											$version_projet = $fichier->getFilename();								 			         
+										//On récupère la version du fichier si elle est plus récente
+										$version_projet = $fichier->getFilename();								 			         
 								 	}
 								 }
 							}	
@@ -325,7 +318,7 @@
 				</div>			 	
 			</div>
 			<div class="col-xs-4 col-md-5 text-right">
-			By Epix &copy; 2016
+			 <b><?php echo(VERSION);?></b> &copy; 2016-<?php echo(date("Y")); ?> <b>By Epix</b>
 			</div>	
 		</div>		 
 	</div>							
