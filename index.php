@@ -2,6 +2,7 @@
 	// Capture du temp en début de page 
 	$timestamp_debut = microtime(true);
     //inclusion du fichier de config
+	require_once 'include/version.inc.php';
 	require_once 'include/config.inc.php';
 	require_once 'include/fct_fichier.inc.php';
 ?>
@@ -12,8 +13,8 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="Portail Projets Web- Epix &copy; 2016">
-	<meta name="author" content="Epix">
+	<meta name="description" content="Portail Projets Web">
+	<meta name="author" content="Eric Gautheron alias EpixFr">
 	<link rel="icon" type="image/png" href="favicon.png" />
 
 	<title>PPW - <?php echo $_SERVER['SERVER_NAME']; ?></title>
@@ -53,9 +54,11 @@
 			</div>
 			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">				
-					<li><a href="php/infophp.php" target="_blank"><span class="icon icon-cog"></span> Phpinfo</a></li>
+					<li><a href="infophp.php" target="_blank"><span class="icon icon-cog"></span> Phpinfo</a></li>
 					<li><a href="IcoMoonRef/Reference.html" target="'_blank"><span class="icon icon-IcoMoon"></span> IcoMoon</a></li>
+				<?php if(URL_ADMIN_BDD<>"") { ?>
 					<li><a href="<?php echo(URL_ADMIN_BDD);?>" target="'_blank"><span class="icon icon-database"></span> PhpMyAdmin</a></li>
+				<?php } ?>
 				</ul>
 			</div>
 			<!--/.nav-collapse -->
@@ -318,7 +321,7 @@
 				</div>			 	
 			</div>
 			<div class="col-xs-4 col-md-5 text-right">
-			 <b><?php echo(VERSION);?></b> &copy; 2016-<?php echo(date("Y")); ?> <b>By Epix</b>
+			 <b><?php echo(VERSION);?></b> &copy; 2016-<?php echo(date("Y")); ?> <a href="http://eric.gautheron.info"><b>By Epix</b></a>
 			</div>	
 		</div>		 
 	</div>							

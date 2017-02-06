@@ -8,7 +8,4 @@ define('DOSSIER_PROJETS', '../projets');
 //Time Zone du serveur
 define('TIME_ZONE_SERVER','Europe/Paris');
 
-//Version de PPW
-define('VERSION', 'PPW v1.3');
-
 ?>
