@@ -31,7 +31,8 @@ L'ensemble est en responsive design basé sur le Framework Bootstrap.
 
 Installation
 ------------
-Copier le repo sur votre serveur web puis configurer le dossier des projets à parcourir.
+Téléchargez [la dernière version de PPW](https://github.com/EpixFr/PPW/releases).
+Décompactez-la sur votre serveur web puis configurer le dossier des projets à parcourir.
 
 Configuration
 -------------
